@@ -1,12 +1,28 @@
+using EstimationPoker.ApiService;
+using EstimationPoker.ApiService.Database;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add service defaults & Aspire components.
 builder.AddServiceDefaults();
 
+builder.Services.AddDbContext<EstimationPokerDbContext>(options =>
+{
+    options.UseNpgsql(builder.Configuration.GetConnectionString("postgresdb"));
+});
+
 // Add services to the container.
 builder.Services.AddProblemDetails();
 
 var app = builder.Build();
+
+using (var scope = app.Services.CreateScope())
+{
+    var dbContext = scope.ServiceProvider.GetRequiredService<EstimationPokerDbContext>();
+    dbContext.Database.Migrate();
+}
 
 // Configure the HTTP request pipeline.
 app.UseExceptionHandler();
@@ -27,6 +43,12 @@ app.MapGet("/weatherforecast", () =>
         ))
         .ToArray();
     return forecast;
+});
+
+app.MapGet("/users", async ([FromServices] EstimationPokerDbContext dbContext) =>
+{
+    var users = await dbContext.Users.ToListAsync();
+    return users;
 });
 
 app.MapDefaultEndpoints();

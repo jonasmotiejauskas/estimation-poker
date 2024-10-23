@@ -1,4 +1,4 @@
-﻿namespace EstimationPoker.ApiService
+﻿namespace EstimationPoker.ApiService.Models
 {
     public class User
     {

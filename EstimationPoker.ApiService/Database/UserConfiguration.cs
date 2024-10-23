@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Microsoft.EntityFrameworkCore;
+using EstimationPoker.ApiService.Models;
 
 namespace EstimationPoker.ApiService.Database
 {
@@ -12,12 +13,14 @@ namespace EstimationPoker.ApiService.Database
             builder.HasKey(u => u.Id);
 
             builder.Property(u => u.Id)
-                .IsRequired()
-                .ValueGeneratedNever();
+                .IsRequired();
 
             builder.Property(u => u.Name)
                 .IsRequired()
-                .HasMaxLength(500);
+            .HasMaxLength(500);
+
+            builder.HasData(
+                new User { Id = 1, Name = "John Doe" });
         }
     }
 }

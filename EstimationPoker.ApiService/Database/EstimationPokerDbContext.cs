@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using EstimationPoker.ApiService.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace EstimationPoker.ApiService.Database
 {
@@ -10,9 +11,6 @@ namespace EstimationPoker.ApiService.Database
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.ApplyConfiguration(new UserConfiguration());
-
-            modelBuilder.Entity<User>().HasData(
-                new User { Id = 1, Name = "John Doe" });
         }
     }
 }

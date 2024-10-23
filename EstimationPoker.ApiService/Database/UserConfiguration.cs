@@ -17,7 +17,7 @@ namespace EstimationPoker.ApiService.Database
 
             builder.Property(u => u.Name)
                 .IsRequired()
-            .HasMaxLength(500);
+                .HasMaxLength(500);
 
             builder.HasData(
                 new User { Id = 1, Name = "John Doe" });

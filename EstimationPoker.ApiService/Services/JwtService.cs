@@ -3,11 +3,11 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 
-namespace EstimationPoker.ApiService
+namespace EstimationPoker.ApiService.Services
 {
     public interface IJwtService
     {
-        string GenerateToken(string username, Guid userId, string role);
+        string GenerateToken(string email, int userId, string role);
     }
 
     public class JwtService : IJwtService
@@ -19,7 +19,7 @@ namespace EstimationPoker.ApiService
             _configuration = configuration;
         }
 
-        public string GenerateToken(string username, Guid userId, string role)
+        public string GenerateToken(string email, int userId, string role)
         {
             var key = _configuration["Jwt:Key"];
             var secret = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(key));
@@ -27,10 +27,10 @@ namespace EstimationPoker.ApiService
 
             var claims = new[]
             {
-                new Claim(ClaimTypes.NameIdentifier, username),
+                new Claim(ClaimTypes.NameIdentifier, email),
                 new Claim("userId", userId.ToString()),
                 new Claim(ClaimTypes.Role, role),
-                new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
+                new Claim(JwtRegisteredClaimNames.Jti, userId.ToString()),
             };
 
             var jwt = new JwtSecurityToken(

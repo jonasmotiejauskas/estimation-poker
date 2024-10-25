@@ -34,9 +34,6 @@ namespace EstimationPoker.ApiService.Database
             builder.Property(u => u.Role)
                 .IsRequired()
                 .HasMaxLength(100);
-
-            builder.HasData(
-                new User { Id = 1, Name = "John Doe", Email = "john.doe@gmail.com", Password = [], Salt = [], Role = "Admin" });
         }
     }
 }

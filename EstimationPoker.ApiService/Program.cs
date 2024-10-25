@@ -1,6 +1,9 @@
 using Asp.Versioning;
+using EstimationPoker.ApiService;
 using EstimationPoker.ApiService.Database;
 using EstimationPoker.ApiService.Extensions;
+using EstimationPoker.ApiService.Repositories;
+using EstimationPoker.ApiService.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 using System.Reflection;
@@ -54,6 +57,15 @@ builder.Services.AddSwaggerGen(c =>
     });
 });
 builder.Services.AddEndpoints(Assembly.GetExecutingAssembly());
+
+builder.Services.AddScoped<IUserCredentialService, UserCredentialService>();
+builder.Services.AddScoped<ICreateUserMapper, CreateUserMapper>();
+builder.Services.AddScoped<IAuthenticationService, AuthenticationService>();
+builder.Services.AddScoped<IJwtService, JwtService>();
+builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<IUserDtoMapper, UserDtoMapper>();
+builder.Services.AddScoped<IUserValidator, UserValidator>();
+builder.Services.AddScoped<IUserRepository, UserReposotory>();
 
 var app = builder.Build();
 

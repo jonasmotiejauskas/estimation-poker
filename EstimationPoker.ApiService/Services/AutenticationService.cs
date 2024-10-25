@@ -1,11 +1,14 @@
 ﻿using EstimationPoker.ApiService.Models;
+using EstimationPoker.ApiService.Models.Dto;
+using EstimationPoker.ApiService.Repositories;
+using EstimationPoker.ApiService.Services;
 
-/*namespace EstimationPoker.ApiService
+namespace EstimationPoker.ApiService
 {
     public interface IAuthenticationService
     {
         Task RegisterAsync(CreateUserDto userDto);
-        Task<User?> LoginAsync(string username, string password);
+        Task<User?> LoginAsync(string email, string password);
     }
 
     public class AuthenticationService : IAuthenticationService
@@ -21,10 +24,17 @@
             _userCredentialService = userCredentialService;
         }
 
-
-        public async Task<User?> LoginAsync(string username, string password)
+        public async Task RegisterAsync(CreateUserDto userDto)
         {
-            var user = await _userRepository.GetUserAsync(username);
+            var user = _createUserMapper.Bind(userDto);
+
+            await _userRepository.AddUserAsync(user);
+        }
+
+
+        public async Task<User?> LoginAsync(string email, string password)
+        {
+            var user = await _userRepository.GetUserAsync(email);
 
             if (user == null)
             {
@@ -39,4 +49,4 @@
             return null;
         }
     }
-}*/
+}

@@ -60,8 +60,8 @@ builder.Services.AddEndpoints(Assembly.GetExecutingAssembly());
 
 builder.Services.AddScoped<IUserCredentialService, UserCredentialService>();
 builder.Services.AddScoped<ICreateUserMapper, CreateUserMapper>();
-builder.Services.AddScoped<IAuthenticationService, AuthenticationService>();
 builder.Services.AddScoped<IJwtService, JwtService>();
+builder.Services.AddScoped<IAuthenticationService, AuthenticationService>();
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IUserDtoMapper, UserDtoMapper>();
 builder.Services.AddScoped<IUserValidator, UserValidator>();

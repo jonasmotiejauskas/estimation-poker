@@ -16,13 +16,13 @@ namespace EstimationPoker.ApiService.Services
         {
             var validationResult = new ValidationResult();
 
-            validationResult.Merge(ValidatePassword(createUserDto.Password));
+            validationResult.Merge(ValidatePassword(createUserDto.Password, createUserDto.ConfirmationPassword));
             validationResult.Merge(ValidateName(createUserDto.Name));
             validationResult.Merge(ValidateEmail(createUserDto.Email));
 
             return validationResult;
         }
-        public ValidationResult ValidatePassword(string password)
+        public ValidationResult ValidatePassword(string password, string confirmationPassword)
         {
             var validationResult = new ValidationResult();
             const int passwordLength = 500;
@@ -34,6 +34,11 @@ namespace EstimationPoker.ApiService.Services
             if (!Regex.IsMatch(password, pattern))
             {
                 validationResult.Errors.Add($"Password must have a number, uppercase letter, special character (e.g., !@#$%^&*()) and have at least 6 characters long");
+            }
+
+            if (password != confirmationPassword)
+            {
+                validationResult.Errors.Add("Password and confirmation password do not match.");
             }
             return validationResult;
         }

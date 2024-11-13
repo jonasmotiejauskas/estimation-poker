@@ -17,8 +17,8 @@ namespace EstimationPoker.ApiService
             using var hmac = new HMACSHA512();
             return new HashedCredentials
             {
-                Password = hmac.Key,
-                Salt = hmac.ComputeHash(Encoding.UTF8.GetBytes(password))
+                Password = hmac.ComputeHash(Encoding.UTF8.GetBytes(password)),
+                Salt = hmac.Key,
             };
         }
 

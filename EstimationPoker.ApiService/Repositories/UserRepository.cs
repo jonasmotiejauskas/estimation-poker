@@ -28,9 +28,9 @@ namespace EstimationPoker.ApiService.Repositories
             await _context.SaveChangesAsync();
         }
 
-        public async Task<User> GetUserAsync(string name)
+        public async Task<User> GetUserAsync(string email)
         {
-            var user = await _context.Users.FirstOrDefaultAsync(x => x.Name == name);
+            var user = await _context.Users.FirstOrDefaultAsync(x => x.Email == email);
             return user;
         }
 

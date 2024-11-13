@@ -1,12 +1,25 @@
+using Asp.Versioning;
 using EstimationPoker.ApiService;
 using EstimationPoker.ApiService.Database;
-using Microsoft.AspNetCore.Mvc;
+using EstimationPoker.ApiService.Extensions;
+using EstimationPoker.ApiService.Repositories;
+using EstimationPoker.ApiService.Services;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.OpenApi.Models;
+using System.Reflection;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add service defaults & Aspire components.
 builder.AddServiceDefaults();
+
+builder.Services.AddApiVersioning(options =>
+{
+    options.DefaultApiVersion = new ApiVersion(1, 0);
+    options.ReportApiVersions = true;
+    options.AssumeDefaultVersionWhenUnspecified = true;
+    options.ApiVersionReader = new HeaderApiVersionReader("api-version");
+});
 
 builder.Services.AddDbContext<EstimationPokerDbContext>(options =>
 {
@@ -15,8 +28,54 @@ builder.Services.AddDbContext<EstimationPokerDbContext>(options =>
 
 // Add services to the container.
 builder.Services.AddProblemDetails();
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen(c =>
+{
+    c.SwaggerDoc("v1", new OpenApiInfo { Title = "User Registration API", Version = "v1" });
+    c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+    {
+        Description = "JWT Authorization",
+        Name = "Authorization",
+        In = ParameterLocation.Header,
+        Type = SecuritySchemeType.Http,
+        Scheme = "bearer",
+        BearerFormat = "JWT"
+    });
+    c.AddSecurityRequirement(new OpenApiSecurityRequirement
+    {
+        {
+            new OpenApiSecurityScheme
+            {
+                Reference = new OpenApiReference
+                {
+                    Type = ReferenceType.SecurityScheme,
+                    Id = "Bearer"
+                }
+            },
+            new string[] {}
+        }
+    });
+});
+builder.Services.AddEndpoints(Assembly.GetExecutingAssembly());
+
+builder.Services.AddScoped<IUserCredentialService, UserCredentialService>();
+builder.Services.AddScoped<ICreateUserMapper, CreateUserMapper>();
+builder.Services.AddScoped<IJwtService, JwtService>();
+builder.Services.AddScoped<IAuthenticationService, AuthenticationService>();
+builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<IUserDtoMapper, UserDtoMapper>();
+builder.Services.AddScoped<IUserValidator, UserValidator>();
+builder.Services.AddScoped<IUserRepository, UserReposotory>();
 
 var app = builder.Build();
+
+if (app.Environment.IsDevelopment())
+{
+    app.UseSwagger();
+    app.UseSwaggerUI();
+}
+
+app.MapEndpoints();
 
 using (var scope = app.Services.CreateScope())
 {
@@ -45,11 +104,6 @@ app.MapGet("/weatherforecast", () =>
     return forecast;
 });
 
-app.MapGet("/users", async ([FromServices] EstimationPokerDbContext dbContext) =>
-{
-    var users = await dbContext.Users.ToListAsync();
-    return users;
-});
 
 app.MapDefaultEndpoints();
 
